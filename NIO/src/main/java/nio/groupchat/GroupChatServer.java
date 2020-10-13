@@ -16,7 +16,7 @@ public class GroupChatServer
     //定义初始化属性
     private ServerSocketChannel serverSocketChannel;
     private Selector selector;
-    private static int PORT = 6007;
+    private static int PORT = 6666;
 
     public GroupChatServer() throws IOException {
         selector = Selector.open();
@@ -78,34 +78,46 @@ public class GroupChatServer
             if (read > 0) {
                 String message = new String(attachmentBuffer.array());
                 //将数据输出
-                SocketAddress remoteAddress = channel.getRemoteAddress();
-                System.out.println(remoteAddress + ":" + message);
+                System.out.println(message);
                 //转发讯息向其他客户机
                 sendInfoToOtherClients(message,channel);
             }
         }catch (Exception e) {
             e.printStackTrace();
-        }finally {
+            System.out.println("客户机：" + channel.getRemoteAddress() + "已下线");
+            key.cancel();
             channel.close();
+        }finally {
+
         }
     }
 
     public void sendInfoToOtherClients(String message, Channel channel) throws IOException {
-        Set<SelectionKey> keys = selector.keys();
-        for (SelectionKey key : keys) {
-            //获取到所有注册在Selector上的Channel
-            Channel targetChannel = key.channel();
-            //排除发送消息方
-            if(targetChannel instanceof SocketChannel && targetChannel != channel ) {
-                //将信息存储到Buffer
-                ByteBuffer attachmentBuffer = ByteBuffer.wrap(message.getBytes());
-                //转型
-                SocketChannel dest = (SocketChannel)targetChannel;
-                //将信息写入到Channel
-                dest.write(attachmentBuffer);
+            Set<SelectionKey> keys = selector.keys();
+            for (SelectionKey key : keys) {
+                //获取到所有注册在Selector上的Channel
+                Channel targetChannel = key.channel();
+                //排除发送消息方
+                if(targetChannel instanceof SocketChannel && targetChannel != channel ) {
+                    //将信息存储到Buffer
+                    ByteBuffer attachmentBuffer = ByteBuffer.wrap(message.getBytes());
+                    //转型
+                    SocketChannel dest = (SocketChannel)targetChannel;
+                    //将信息写入到Channel
+                    dest.write(attachmentBuffer);
+                }
             }
-        }
+
     }
+
+    public static void main(String args[]) throws IOException {
+        //初始化服务端
+        GroupChatServer groupChatServer = new GroupChatServer();
+        //开启服务端监听
+        groupChatServer.listen();
+
+    }
+
 
 
 
