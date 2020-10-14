@@ -12,6 +12,12 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 
 public class NettyServer {
     public NettyServer() throws InterruptedException {
+
+        /**
+         * BossGroup和WorkGroup都是无限循环的
+         * 含有的子线程数量(NioEventLoop)
+         * 默认是cpu核心数量的两倍
+         */
         //创建bossGroup用来监听连接事件
         NioEventLoopGroup bossGroup = new NioEventLoopGroup();
         //创建workGroup用来监听IO事件
@@ -47,11 +53,11 @@ public class NettyServer {
 
         }
 
-
-
-
-
     }
+
+    public static void main(String args[]) throws InterruptedException {
+        NettyServer nettyServer = new NettyServer();
+        }
 
 
 

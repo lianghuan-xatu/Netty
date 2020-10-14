@@ -4,8 +4,9 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
+
 import io.netty.channel.socket.SocketChannel;
-import org.omg.CORBA.BooleanSeqHelper;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyClient {
     public NettyClient() {
@@ -13,11 +14,11 @@ public class NettyClient {
         try{
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(eventLoopGroup)
-                    .channel(SocketChannel.class)
+                    .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(null);
+                            ch.pipeline().addLast(new NettyClientHandler());
                         }
                     });
             System.out.println("client is ready");
@@ -32,5 +33,10 @@ public class NettyClient {
         }
 
     }
+
+    public static void main(String args[]){
+        NettyClient nettyClient = new NettyClient();
+        }
+
 }
 
