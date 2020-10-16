@@ -29,37 +29,42 @@ public class GroupChatServer
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
     }
     //监听
+    @SuppressWarnings("InfiniteLoopStatement")
     public void listen() throws IOException {
-        while (true) {
-            if(selector.select() > 0) {
-                //有关注的事件
-                Set<SelectionKey> selectionKeys = selector.selectedKeys();
-                Iterator<SelectionKey> iterator = selectionKeys.iterator();
-                while (iterator.hasNext()) {
-                    SelectionKey selectionKey = iterator.next();
-                    if(selectionKey.isAcceptable()) {
-                        //有上线客户端
-                        SocketChannel socketChannel = serverSocketChannel.accept();
-                        //设置非阻塞模式
-                        socketChannel.configureBlocking(false);
-                        //注册客户端读事件
-                        socketChannel.register(selector,SelectionKey.OP_READ, ByteBuffer.allocate(1024));
-                        SocketAddress remoteAddress = socketChannel.getRemoteAddress();
-                        System.out.println(remoteAddress + "客户机上线");
-                    }
-                    if(selectionKey.isReadable()) {
-                        //检测到读事件
-                        readData(selectionKey);
+        try {
+            while (true) {
+                if (selector.select() > 0) {
+                    //有关注的事件
+                    Set<SelectionKey> selectionKeys = selector.selectedKeys();
+                    Iterator<SelectionKey> iterator = selectionKeys.iterator();
+                    while (iterator.hasNext()) {
+                        SelectionKey selectionKey = iterator.next();
+                        if (selectionKey.isAcceptable()) {
+                            //有上线客户端
+                            SocketChannel socketChannel = serverSocketChannel.accept();
+                            //设置非阻塞模式
+                            socketChannel.configureBlocking(false);
+                            //注册客户端读事件
+                            socketChannel.register(selector, SelectionKey.OP_READ, ByteBuffer.allocate(1024));
+                            SocketAddress remoteAddress = socketChannel.getRemoteAddress();
+                            System.out.println(remoteAddress + "客户机上线");
+                        }
+                        if (selectionKey.isReadable()) {
+                            //检测到读事件
+                            readData(selectionKey);
+
+                        }
+                        //删除已处理的selectionKey
+                        iterator.remove();
 
                     }
-                    //删除已处理的selectionKey
-                    iterator.remove();
 
+                } else {
+                    System.out.println("服务端无连接.....");
                 }
-
-            }else {
-                System.out.println("服务端无连接.....");
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
