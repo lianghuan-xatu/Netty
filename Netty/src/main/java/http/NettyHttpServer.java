@@ -19,7 +19,7 @@ public class NettyHttpServer
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new MyChannelInitializer());
             ChannelFuture channelFuture = bootstrap.bind(8080).sync();
-            channelFuture.channel().closeFuture().sync();//监听关闭事件
+            channelFuture.channel().closeFuture().sync();////关闭通道进行事件监听
 
         }catch (Exception e){
             e.printStackTrace();

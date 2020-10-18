@@ -43,7 +43,7 @@ public class NettGroupChatServer {
                     });
             System.out.println("服务器启动...");
             ChannelFuture channelFuture = serverBootstrap.bind(PORT).sync();
-            //关闭监听事件服务
+            //关闭通道进行事件监听
             channelFuture.channel().closeFuture().sync();
 
         } catch (Exception e) {
