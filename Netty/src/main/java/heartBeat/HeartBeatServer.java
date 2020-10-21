@@ -16,7 +16,7 @@ import org.omg.CORBA.NO_IMPLEMENT;
 import java.util.concurrent.TimeUnit;
 
 public class HeartBeatServer {
-    private final int   PORT;
+    private final int PORT;
 
     public HeartBeatServer(int port) {
         PORT = port;
