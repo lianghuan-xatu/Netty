@@ -1,10 +1,8 @@
-package rpc;
+package rpc.provider;
 
-import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.concurrent.EventExecutorGroup;
-import rpc.Impl.HelloServiceImpl;
+import rpc.provider.HelloServiceImpl;
 
 public class ServerHandler extends ChannelInboundHandlerAdapter {
     @Override

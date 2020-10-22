@@ -1,4 +1,4 @@
-package rpc.Impl;
+package rpc.provider;
 
 import rpc.HelloService;
 
